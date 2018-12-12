@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import java.io.File;
@@ -23,6 +24,8 @@ public class Controller
     public File korijenski_direktorij;
     public Button prekini;
 
+    private Thread nit1;
+
     private ObservableList<String> lista_pregleda;
 
     //konstruktor
@@ -39,12 +42,18 @@ public class Controller
         /*povezivanje tipova observableList i TextView*/
         spisak.setItems(lista_pregleda);
 
-        prekini.getStyleClass().add("prekidanje");
+        prekini.getStyleClass().add("neaktivan");
     }
 
     /*ubacuje u atribut observable list svaki fajl na kopu koji ima tekts ako sto je unesen u texfield*/
-    private void IzvrsavanjePretrage(String put)
+    private void IzvrsavanjePretrage(String put, String nalazilo_se_u_trenutku_slanja)
     {
+        /*mora se dodati i ovaj parametar da bi korisnik mogao brisati sadrzaj text fielda,
+         a da se svejedno trazi po onome sto je bilo u trenutku pritiska na trazi*/
+
+        trazi.getStyleClass().add("neaktivan");
+        prekini.getStyleClass().removeAll("neaktivan");
+
         File trazeni = new File(put);
 
         if(trazeni.isFile())
@@ -58,7 +67,7 @@ public class Controller
             try
             {
                 for(File novi : trazeni.listFiles())
-                    IzvrsavanjePretrage(novi.getAbsolutePath());
+                    IzvrsavanjePretrage(novi.getAbsolutePath(), nalazilo_se_u_trenutku_slanja);
             }
             catch (Exception e)
             {
@@ -70,29 +79,29 @@ public class Controller
     public void Pretrazi(ActionEvent actionEvent)
     {
         lista_pregleda.clear();
-
-        Thread novi = new Thread(()->{
+        
+        nit1 = new Thread(()->{
                 Platform.runLater(()-> {
-                                            IzvrsavanjePretrage(korijenski_direktorij.getAbsolutePath());
+                                            IzvrsavanjePretrage(korijenski_direktorij.getAbsolutePath(), podstring.getText());
                 });
         });
+        nit1.start();
 
-        novi.start();
-
-        while(novi.getState() == Thread.State.RUNNABLE )
-        {
-            trazi.getStyleClass().add("trazenje");
-            prekini.getStyleClass().removeAll("prekidanje");
-
-        }
-
-        trazi.getStyleClass().removeAll("trazenje");
-        prekini.getStyleClass().add("prekidanje");
-
+        trazi.getStyleClass().removeAll("neaktivan");
+        prekini.getStyleClass().add("neaktivan");
     }
 
     public void Prekini(ActionEvent actionEvent)
     {
-
+        if(prekini.getStyleClass().size() == 0 && nit1.getState()== Thread.State.RUNNABLE)
+        {
+            nit1.stop();
+        }
+        else
+        {
+            Alert upozorenje = new Alert(Alert.AlertType.WARNING);
+            upozorenje.setContentText("Ne mozete pritisnuti dugme prekini dok se ne pretrazuje");
+            upozorenje.showAndWait();
+        }
     }
 }
