@@ -3,6 +3,44 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<GridPane fx:controller="sample.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-</GridPane>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.ListView?>
+<BorderPane fx:controller="sample.Controller" xmlns:fx="http://javafx.com/fxml" prefHeight="600" prefWidth="600">
+
+    <padding>
+        <!--"inset" znaci umetak-->
+        <Insets top="10" bottom="10" left="10" right="10"/>
+    </padding>
+
+    <top>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS"/>
+                <!--"hgrow" sluzi da bi se visina prilagodila visini prozora-->
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <rowConstraints>
+                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+            </rowConstraints>
+
+            <Label fx:id="uzorak" text="Uzorak:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+            <TextField fx:id="podstring" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="100"/>
+            <Button fx:id="trazi" text="Traži" GridPane.rowIndex="0" GridPane.columnIndex="2" onAction="#Pretrazi"/>
+
+            <padding>
+                <!--"inset" znaci umetak-->
+                <Insets  bottom="10"/>
+            </padding>
+        </GridPane>
+    </top>
+
+    <center>
+        <ListView fx:id="spisak">
+        </ListView>
+    </center>
+</BorderPane>
