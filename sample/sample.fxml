@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.control.ListView?>
+<?import java.net.URL?>
 <BorderPane fx:controller="sample.Controller" xmlns:fx="http://javafx.com/fxml" prefHeight="600" prefWidth="600">
 
     <padding>
@@ -22,6 +23,7 @@
                 <!--"hgrow" sluzi da bi se visina prilagodila visini prozora-->
                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
             </columnConstraints>
 
             <rowConstraints>
@@ -31,6 +33,7 @@
             <Label fx:id="uzorak" text="Uzorak:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
             <TextField fx:id="podstring" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="100"/>
             <Button fx:id="trazi" text="Traži" GridPane.rowIndex="0" GridPane.columnIndex="2" onAction="#Pretrazi"/>
+            <Button fx:id="prekini" text="Prekini" GridPane.rowIndex="0" GridPane.columnIndex="3" onAction="#Prekini"/>
 
             <padding>
                 <!--"inset" znaci umetak-->
@@ -43,4 +46,8 @@
         <ListView fx:id="spisak">
         </ListView>
     </center>
+
+    <stylesheets>
+        <URL value="@/stil.css"/>
+    </stylesheets>
 </BorderPane>

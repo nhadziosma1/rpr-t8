@@ -3,6 +3,7 @@ package sample;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import java.io.File;
@@ -15,24 +16,30 @@ import java.util.ResourceBundle;
 
 public class Controller
 {
+    //atributi
     public TextField podstring;
     public Button trazi;
     public ListView spisak;
     public File korijenski_direktorij;
-
+    public Button prekini;
 
     private ObservableList<String> lista_pregleda;
 
+    //konstruktor
     public Controller()
     {
         korijenski_direktorij = new File(System.getProperty("user.home"));
         lista_pregleda = FXCollections.observableArrayList();
     }
 
-    /*"initializ" metoda sluzi za databinding*/
+    /*"initialize" metoda sluzi za databinding*/
+    @FXML
     public void initialize()
     {
+        /*povezivanje tipova observableList i TextView*/
         spisak.setItems(lista_pregleda);
+
+        prekini.getStyleClass().add("prekidanje");
     }
 
     /*ubacuje u atribut observable list svaki fajl na kopu koji ima tekts ako sto je unesen u texfield*/
@@ -40,7 +47,12 @@ public class Controller
     {
         File trazeni = new File(put);
 
-        if( trazeni.isDirectory() )
+        if(trazeni.isFile())
+        {
+            if(trazeni.getName().contains( podstring.getText() ))
+                lista_pregleda.add(trazeni.getAbsolutePath());
+        }
+        else if( trazeni.isDirectory() )
         {
             /*ulazi dok ne prodjes svaki podfolder, kada ce doci do izuzetka*/
             try
@@ -52,49 +64,35 @@ public class Controller
             {
             }
         }
-        else if(trazeni.isFile())
-        {
-            if(trazeni.getName().contains( podstring.toString() ))
-            lista_pregleda.add(trazeni.getAbsolutePath());
-        }
+
     }
 
     public void Pretrazi(ActionEvent actionEvent)
     {
-        new Thread(()->{
+        lista_pregleda.clear();
+
+        Thread novi = new Thread(()->{
                 Platform.runLater(()-> {
                                             IzvrsavanjePretrage(korijenski_direktorij.getAbsolutePath());
                 });
-        }).start();
+        });
+
+        novi.start();
+
+        while(novi.getState() == Thread.State.RUNNABLE )
+        {
+            trazi.getStyleClass().add("trazenje");
+            prekini.getStyleClass().removeAll("prekidanje");
+
+        }
+
+        trazi.getStyleClass().removeAll("trazenje");
+        prekini.getStyleClass().add("prekidanje");
+
+    }
+
+    public void Prekini(ActionEvent actionEvent)
+    {
+
     }
 }
-
-
- /*   private void pretraga(String put, String uzorak) {
-        File file = new File(put);
-        if (file.isDirectory()) {
-            try {
-                for (File file1 : file.listFiles()) {
-                    pretraga(file1.getAbsolutePath(), uzorak);
-                }
-            } catch (Exception exception) {
-            }
-        }
-        else if (file.isFile()) {
-            if (file.getName().contains(uzorak)) {
-                observabilnaLista.add(file.getAbsolutePath());
-            }
-        }
-    }
-
-    public void pretragaF(ActionEvent actionEvent) {
-        new Thread(() -> {
-            try {
-                Platform.runLater(() -> pretraga(korijenskiDirektorij.getAbsolutePath(), tekst.getText()));
-                //Thread.sleep(500);
-            } catch (Exception e) {
-
-            }
-        }).start();
-    }
-}*/
