@@ -34,7 +34,6 @@ public class Controller
     public ListView spisak;
     public File korijenski_direktorij;
     public Button prekini;
-
     private Thread nit1;
 
     private ObservableList<String> lista_pregleda;
@@ -90,15 +89,24 @@ public class Controller
         /*mora se dodati i ovaj parametar da bi korisnik mogao brisati sadrzaj text fielda,
          a da se svejedno trazi po onome sto je bilo u trenutku pritiska na trazi*/
 
-        trazi.setDisable(false);
-        prekini.setDisable(true);
-
         File trazeni = new File(put);
 
         if(trazeni.isFile())
         {
             if(trazeni.getName().contains( podstring.getText() ))
-                lista_pregleda.add(trazeni.getAbsolutePath());
+            {
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                Platform.runLater(()-> {
+                    lista_pregleda.add(trazeni.getAbsolutePath());
+                });
+            }
         }
         else if( trazeni.isDirectory() )
         {
@@ -112,6 +120,15 @@ public class Controller
             {
             }
         }
+
+        File f = new File(put);
+
+        if(f.getAbsolutePath().equals(korijenski_direktorij.getAbsolutePath()))
+        {
+            trazi.setDisable(false);
+            prekini.setDisable(true);
+        }
+
     }
 
     public void Pretrazi(ActionEvent actionEvent)
@@ -121,29 +138,27 @@ public class Controller
 
         lista_pregleda.clear();
 
-        nit1 = new Thread(()->{
-                Platform.runLater(()-> {
-                                            IzvrsavanjePretrage(korijenski_direktorij.getAbsolutePath(), podstring.getText());
-                });
-        });
+        Pretrazivanje pr = new Pretrazivanje();
+        nit1= new Thread(pr);
         nit1.start();
 
-        trazi.setDisable(false);
-        prekini.setDisable(true);
     }
 
     public void Prekini(ActionEvent actionEvent)
     {
-        if(prekini.isDisable() && nit1.getState() != Thread.State.RUNNABLE)
+        trazi.setDisable(false);
+        prekini.setDisable(true);
+        nit1.stop();
+    }
+
+    public class Pretrazivanje implements Runnable
+    {
+        @Override
+        public void run()
         {
-            nit1.stop();
-        }
-        else
-        {
-            Alert upozorenje = new Alert(Alert.AlertType.WARNING);
-            upozorenje.setContentText("Ne mozete pritisnuti dugme prekini dok se ne pretrazuje");
-            upozorenje.showAndWait();
+            IzvrsavanjePretrage(korijenski_direktorij.getAbsolutePath(), podstring.getText() );
         }
     }
+
 
 }

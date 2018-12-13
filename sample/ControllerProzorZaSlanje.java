@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -46,11 +47,14 @@ public class ControllerProzorZaSlanje implements Initializable {
         tfIme.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
-                if (!n) {
-                    if (validnoImePrezime(tfIme.getText())) {
+                if (!n)
+                {
+                    if (validnoImePrezime(tfIme.getText()))
+                    {
                         tfIme.getStyleClass().removeAll("poljeNijeIspravno");
                         tfIme.getStyleClass().add("poljeIspravno");
-                    } else {
+                    }
+                    else {
                         tfIme.getStyleClass().removeAll("poljeIspravno");
                         tfIme.getStyleClass().add("poljeNijeIspravno");
                     }
@@ -60,8 +64,10 @@ public class ControllerProzorZaSlanje implements Initializable {
         tfPrezime.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
-                if (!n) {
-                    if (validnoImePrezime(tfPrezime.getText())) {
+                if (!n)
+                {
+                    if (validnoImePrezime(tfPrezime.getText()))
+                    {
                         tfPrezime.getStyleClass().removeAll("poljeNijeIspravno");
                         tfPrezime.getStyleClass().add("poljeIspravno");
                     } else {
@@ -75,8 +81,10 @@ public class ControllerProzorZaSlanje implements Initializable {
         tfEmail.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
-                if (!n) {
-                    if (validanEmail(tfEmail.getText())) {
+                if (!n)
+                {
+                    if (validanEmail(tfEmail.getText()))
+                    {
                         tfEmail.getStyleClass().removeAll("poljeNijeIspravno");
                         tfEmail.getStyleClass().add("poljeIspravno");
                     } else {
@@ -106,29 +114,35 @@ public class ControllerProzorZaSlanje implements Initializable {
             }
         });*/
 
-        new Thread( ()-> {
-            tfPostanskiBroj.focusedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
-                    if (!n) {
-                        if (validanPostanskiBroj(tfPostanskiBroj.getText())) {
-                            tfPostanskiBroj.getStyleClass().removeAll("poljeNijeIspravno");
-                            tfPostanskiBroj.getStyleClass().add("poljeIspravno");
-                        } else {
-                            tfPostanskiBroj.getStyleClass().removeAll("poljeIspravno");
-                            tfPostanskiBroj.getStyleClass().add("poljeNijeIspravno");
-                        }
-                    }
-                }
-            });
 
-        }).start();
+        tfPostanskiBroj.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
+                if (!n)
+                {
+                    IspitajPostanski ip = new IspitajPostanski();
+                    Thread nit_ispitivanja = new Thread(ip);
+                    nit_ispitivanja.start();
+
+                    /*if (validanPostanskiBroj(tfPostanskiBroj.getText()))
+                    {
+                        tfPostanskiBroj.getStyleClass().removeAll("poljeNijeIspravno");
+                        tfPostanskiBroj.getStyleClass().add("poljeIspravno");
+                    }
+                    else {
+                        tfPostanskiBroj.getStyleClass().removeAll("poljeIspravno");
+                        tfPostanskiBroj.getStyleClass().add("poljeNijeIspravno");
+                    }*/
+                }
+            }
+        });
 
         cbGrad.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
             public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
-                if (!n) {
+                if (!n)
+                {
                     if (validanGrad(cbGrad.getValue().toString()))
                     {
                         cbGrad.getStyleClass().removeAll("poljeNijeIspravno");
@@ -145,7 +159,8 @@ public class ControllerProzorZaSlanje implements Initializable {
         tfAdresa.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
-                if (!n) {
+                if (!n)
+                {
                     if (validnaAdresa(tfAdresa.getText())) {
                         tfAdresa.getStyleClass().removeAll("poljeNijeIspravno");
                         tfAdresa.getStyleClass().add("poljeIspravno");
@@ -234,7 +249,7 @@ public class ControllerProzorZaSlanje implements Initializable {
         return true;
     }
 
-    private boolean validanPostanskiBroj(String rijec)
+    private void validanPostanskiBroj(String rijec)
     {
         try
         {
@@ -246,9 +261,19 @@ public class ControllerProzorZaSlanje implements Initializable {
             String sadrzaj = ulaz.readLine(); //posto i ima fajl samo jednu liniju teksta
 
             if(sadrzaj.equals("OK"))
-            return true;
+            {
+                Platform.runLater(()-> {
+                    tfPostanskiBroj.getStyleClass().removeAll("poljeNijeIspravno");
+                    tfPostanskiBroj.getStyleClass().add("poljeIspravno");
+                });
+            }
             else
-                return false;
+            {
+                Platform.runLater(()-> {
+                    tfPostanskiBroj.getStyleClass().removeAll("poljeIspravno");
+                    tfPostanskiBroj.getStyleClass().add("poljeNijeIspravno");
+                });
+            }
 
         }
         catch (IOException e)
@@ -256,10 +281,11 @@ public class ControllerProzorZaSlanje implements Initializable {
             e.printStackTrace();
         }
 
-        return true;
+
     }
 
-    private void upozori(ActionEvent actionEvent) {
+    private void upozori(ActionEvent actionEvent)
+    {
         // LINK, procitaj: 1. https://code.makery.ch/blog/javafx-dialogs-official/
         //                 2. https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/Alert.html
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -269,19 +295,27 @@ public class ControllerProzorZaSlanje implements Initializable {
         alert.showAndWait();
     }
 
-    public void potvrdi(ActionEvent actionEvent) {
-        if (!jeLiSveValidno()) {
+    public void potvrdi(ActionEvent actionEvent)
+    {
+        if (!jeLiSveValidno())
+        {
             upozori(actionEvent);
         }
         else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Isparavan unos");
+                alert.setHeaderText("OK");
+                alert.setContentText("Forma je validna!");
+                alert.showAndWait();
 
+                /*naredba za zatvaranje nekog prozora nako nekog actionEvent-a*/
+                ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
         }
-
     }
 
     private boolean jeLiSveValidno() {
-        if (validnoImePrezime(tfIme.getText()) == false || validnoImePrezime(tfPrezime.getText()) == false ||
-                tfEmail.getText().length() == 0)
+        if (tfIme.getText().length()==0 || tfPrezime.getText().length() == 0 ||
+                tfEmail.getText().length() == 0 || cbGrad.getValue() == null || tfAdresa.getText().length()==0 )
             return false;
 
         ArrayList<ObservableList<String>> validnost = new ArrayList<>();
@@ -292,11 +326,24 @@ public class ControllerProzorZaSlanje implements Initializable {
         validnost.add(tfEmail.getStyleClass());
         validnost.add(cbGrad.getStyleClass());
 
-        for (ObservableList<String> o : validnost) {
+        for (ObservableList<String> o : validnost)
+        {
             if (o.contains("poljeNijeIspravno"))
                 return false;
         }
         return true;
     }
+
+    public class IspitajPostanski implements Runnable
+    {
+        @Override
+        public void run ()
+        {
+            validanPostanskiBroj(tfPostanskiBroj.getText());
+
+        }
+
+    }
+
 
 }
