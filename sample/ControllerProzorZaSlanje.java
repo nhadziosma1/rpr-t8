@@ -13,14 +13,20 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
+
+//import org.apache.commons.validator.routines.EmailValidator;
 
 public class ControllerProzorZaSlanje implements Initializable {
 
@@ -31,8 +37,9 @@ public class ControllerProzorZaSlanje implements Initializable {
     public TextField tfEmail;
     public TextField tfPostanskiBroj;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources)  /*pokrece se odmah pri kreiranju*/ {
+    @Override          /*pokrece se odmah pri kreiranju*/
+    public void initialize(URL location, ResourceBundle resources)
+    {
         cbGrad.setItems(FXCollections.observableArrayList("Sarajevo", "Tuzla", "Mostar", "Brcko", "Trebinje", "Zenica", "Banja Luka", "Novi Pazar", "Foca"));
         cbGrad.getSelectionModel().selectFirst();
 
@@ -80,20 +87,42 @@ public class ControllerProzorZaSlanje implements Initializable {
             }
         });
 
-        tfPostanskiBroj.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        /*tfEmail.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
-                if (!n) {
-                    if (validanPostanskiBroj(tfPostanskiBroj.getText())) {
-                        tfPostanskiBroj.getStyleClass().removeAll("poljeNijeIspravno");
-                        tfPostanskiBroj.getStyleClass().add("poljeIspravno");
-                    } else {
-                        tfPostanskiBroj.getStyleClass().removeAll("poljeIspravno");
-                        tfPostanskiBroj.getStyleClass().add("poljeNijeIspravno");
+                EmailValidator validator = EmailValidator.getInstance();
+                if (!n)
+                {
+                    if (validator.isValid(tfEmail.getText())
+                    {
+                        tfEmail.getStyleClass().removeAll("poljeNijeIspravno");
+                        tfEmail.getStyleClass().add("poljeIspravno");
+                    }
+                    else {
+                        tfEmail.getStyleClass().removeAll("poljeIspravno");
+                        tfEmail.getStyleClass().add("poljeNijeIspravno");
                     }
                 }
             }
-        });
+        });*/
+
+        new Thread( ()-> {
+            tfPostanskiBroj.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n) {
+                    if (!n) {
+                        if (validanPostanskiBroj(tfPostanskiBroj.getText())) {
+                            tfPostanskiBroj.getStyleClass().removeAll("poljeNijeIspravno");
+                            tfPostanskiBroj.getStyleClass().add("poljeIspravno");
+                        } else {
+                            tfPostanskiBroj.getStyleClass().removeAll("poljeIspravno");
+                            tfPostanskiBroj.getStyleClass().add("poljeNijeIspravno");
+                        }
+                    }
+                }
+            });
+
+        }).start();
 
         cbGrad.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
@@ -207,7 +236,25 @@ public class ControllerProzorZaSlanje implements Initializable {
 
     private boolean validanPostanskiBroj(String rijec)
     {
-        //URL
+        try
+        {
+            String link = new String("http://c9.etf.unsa.ba/proba/postanskiBroj.php?postanskiBroj=");
+            URL link_url = new URL(link+tfPostanskiBroj.getText().trim());
+
+            BufferedReader ulaz = new BufferedReader(new InputStreamReader(link_url.openStream(), StandardCharsets.UTF_8));
+
+            String sadrzaj = ulaz.readLine(); //posto i ima fajl samo jednu liniju teksta
+
+            if(sadrzaj.equals("OK"))
+            return true;
+            else
+                return false;
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
         return true;
     }

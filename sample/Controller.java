@@ -78,7 +78,6 @@ public class Controller
                 prozor_za_slanje.setTitle("Prozor za slanje");
 
                 prozor_za_slanje.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-                //prozor_za_slanje.initModality(Modality.APPLICATION_MODAL);
                 prozor_za_slanje.show();
             }
         });
@@ -147,27 +146,4 @@ public class Controller
         }
     }
 
-    public void Klik(TouchEvent touchEvent)
-    {
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
-        Stage prozor_za_slanje = new Stage();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/aboutProzor.fxml"));
-        loader.setController(new ControllerProzorZaSlanje());
-
-        try
-        {
-            Parent root = loader.load();
-
-            Stage aboutStage = new Stage();
-            aboutStage.setTitle("Osnovne informacije");
-            aboutStage.setScene(new Scene(root, 700, 700));
-            aboutStage.show();
-        }
-        catch (Exception e)
-        {
-            e.getMessage();
-        }
-    }
 }
