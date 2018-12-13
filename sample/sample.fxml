@@ -43,8 +43,7 @@
     </top>
 
     <center>
-        <ListView fx:id="spisak">
-        </ListView>
+        <ListView fx:id="spisak" />
     </center>
 
     <stylesheets>

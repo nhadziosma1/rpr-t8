@@ -8,7 +8,8 @@ import javafx.stage.Stage;
 
 import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
 
-public class Main extends Application {
+public class Main extends Application
+{
 
     @Override
     public void start(Stage primaryStage) throws Exception{

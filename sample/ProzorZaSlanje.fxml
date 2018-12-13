@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<GridPane fx:controller="sample.ControllerProzorZaSlanje" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" prefHeight="400.0" prefWidth="600.0">
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints vgrow="ALWAYS"/>
+    </rowConstraints>
+
+    <Label fx:id="ime" GridPane.rowIndex="1" GridPane.columnIndex="0" text="Ime: " />
+    <TextField fx:id="tfIme" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+    <Label fx:id="prezime" GridPane.rowIndex="2" GridPane.columnIndex="0" text="Prezime: " />
+    <TextField fx:id="tfPrezime" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+    <Label fx:id="adresa" GridPane.rowIndex="3" GridPane.columnIndex="0" text="Kontakt adresa: "/>
+    <TextField fx:id="tfAdresa" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label fx:id="grad" GridPane.rowIndex="4" GridPane.columnIndex="0" text="Mjesto rodjenja: "/>
+    <ComboBox fx:id="cbGrad" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label fx:id="email" GridPane.rowIndex="5" GridPane.columnIndex="0" text="Email adresa: "/>
+    <TextField fx:id="tfEmail" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Label fx:id="postanskiBroj" GridPane.rowIndex="6" GridPane.columnIndex="0" text="Postanski broj: "/>
+    <TextField fx:id="tfPostanskiBroj" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+    <Button fx:id="potvrdiBtn" GridPane.rowIndex="7" GridPane.columnIndex="6" text="Potvrdi" onAction="#potvrdi"/>
+
+    <padding>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+    </padding>
+
+    <stylesheets>
+        <URL value="@/slanjeProzor.css"/>
+    </stylesheets>
+
+</GridPane>
